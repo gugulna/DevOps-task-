@@ -1,0 +1,14 @@
+image:
+  repository: gcr.io/DevOps-task/stockmanager
+  tag: 0.0.1-SNAPSHOT
+replicaCount: 1
+service:
+  name: stockmanager
+  port: 8030
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  path: /
+  hosts:
+    - example.com
