@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+        - name: {{ template "fullname" . }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JAVA_OPTS
+              value: "-Djava.security.egd=file:/dev/./urandom"
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          args:
+            - "server"
+            - "/app-config.yml"
+          volumeMounts:
+            - name: config
+              mountPath: /app-config.yml
+              subPath: app-config.yml
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "fullname" . }}-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-config
+  namespace: {{ .Values.namespace }}
+data:
+  app-config.yml: |-
+{{ .Files.Get "app-config.yml" | indent 4 }}
