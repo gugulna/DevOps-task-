@@ -1,0 +1,31 @@
+# The name of the Docker image for the microservice.
+image:
+  repository: <gcr.io/DevOps-task>/product-catalogue
+  tag: latest
+
+# The name of the Kubernetes namespace where the microservice will be deployed.
+namespace: default
+
+# The name of the Kubernetes service that exposes the microservice.
+service:
+  name: product-catalogue-service
+  type: ClusterIP
+  port: 8020
+
+# The name of the Kubernetes ingress that exposes the microservice to the internet.
+ingress:
+  name: product-catalogue-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  path: /
+  hosts:
+    - host: example.com
+      paths:
+        - path: /product-catalogue
+
+# The name of the Kubernetes certificate that secures the ingress.
+certificate:
+  name: product-catalogue-certificate
+  secretName: product-catalogue-tls
+  dnsNames:
+    - example.com
