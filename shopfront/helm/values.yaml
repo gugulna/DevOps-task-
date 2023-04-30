@@ -1,0 +1,27 @@
+image:
+  repository: gcr.io/DevOps-task/shopfront
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  name: shopfront
+  type: ClusterIP
+  port: 8010
+
+ingress:
+  enabled: true
+  name: shopfront-ingress
+  hosts:
+    - host: example.com
+      paths:
+        - path: /shopfront
+
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+
+certificate:
+  secretName: shopfront-tls
+  dnsNames:
+    - example.com
